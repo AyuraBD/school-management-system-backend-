@@ -1,0 +1,229 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id            String    @id
+  name          String
+  email         String
+  emailVerified Boolean   @default(false)
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  // Relations
+  sessions      Session[]
+  accounts      Account[]
+  schools       Schools[]
+
+  role   String? @default("USER")
+  phone  String?
+  status String? @default("ACTIVE")
+
+  @@unique([email])
+  @@map("user")
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
+}
+
+model Schools{
+  id String @id @default(uuid())
+  name String
+  address String
+  phone String?
+  email String?
+  website String?
+  principal String?
+  establishedYear Int?
+  contactInfo String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status SchoolStatus
+
+  // relations
+  userId String 
+  user User @relation(fields: [userId], references: [id])
+  classes Classes[]
+  students Students[]
+  subjects Subjects[]
+  exams Exams[]
+
+  @@index([status])
+}
+enum SchoolStatus{
+  APPROVED
+  REJECT
+}
+
+model Classes{
+  id String @id @default(uuid())
+  name String @unique
+  academicYear String
+  capacity Int @default(40)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  schoolId String @unique
+  school Schools @relation(fields: [schoolId], references: [id])
+  students Students[]
+  subjects Subjects[]
+  exams Exams[]
+  results Results[]
+}
+model Students{
+  id String @id @default(uuid())
+  schoolId String
+  school Schools @relation(fields: [schoolId], references: [id])
+  currentClassId String
+  classes Classes @relation(fields: [currentClassId], references: [id])
+  
+  // Personal information
+  name String @db.VarChar(100)
+  fatherName String @db.VarChar(100)
+  motherName String @db.VarChar(100)
+  phone String?
+  age Int
+  address String
+  studentCode String @unique
+  rollNumber Int?
+  dateOfBirth DateTime
+  gender Gender
+  admissionDate String
+  academicStatus AcademicStatus @default(ACTIVE)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  results Results[]
+
+  @@index([schoolId, currentClassId, studentCode])
+}
+enum AcademicStatus{
+  ACTIVE
+  INACTIVE
+  GRADUATED
+  TRANSFERRED
+  SUSPENDED
+  DROPPED
+}
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+model Subjects{
+  id String @id @default(uuid())
+  schoolId String @unique
+  school Schools @relation(fields: [schoolId], references: [id])
+  classesId String
+  classes Classes @relation(fields: [classesId], references: [id])
+  name String
+  subjectCode String @unique
+  description String?
+  type SubjectType @default(WRITING)
+  maxMark String
+  minMark String
+  passMark String
+  isActive Boolean
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  results Results[]
+}
+enum SubjectType {
+  WRITING
+  PRACTICAL
+  ORAL
+}
+model Exams{
+  id String @id @default(uuid())
+  schoolId String
+  school Schools @relation(fields: [schoolId], references: [id])
+  examType ExamType
+  isActive Boolean @default(true)
+  examYear String
+  academicYear String
+  startDate DateTime?
+  endDate DateTime?
+  classesId String
+  classes Classes @relation(fields: [classesId], references: [id])
+  results Results[]
+}
+
+enum ExamType{
+  FIRSTTERM
+  SECONDTERM
+  FINAL
+}
+
+model Results {
+  id String @id @default(uuid())
+  examId String
+  exams Exams @relation(fields: [examId], references: [id])
+  classesId String
+  classes Classes @relation(fields: [classesId], references: [id])
+  studentsId String
+  students Students @relation(fields: [studentsId], references: [id])
+  subjectsId String
+  subjects Subjects @relation(fields: [subjectsId], references: [id])
+  academicYear String
+  obtainedMarks Int
+}
+
