@@ -92,10 +92,9 @@ model Schools{
   website String?
   principal String?
   establishedYear Int?
-  contactInfo String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  status SchoolStatus
+  status SchoolStatus @default(APPROVED)
 
   // relations
   userId String 

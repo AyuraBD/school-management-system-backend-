@@ -3,6 +3,7 @@ import cors from "cors";
 import { toNodeHandler } from "better-auth/node";
 import { auth } from "./lib/auth";
 import { schoolRouter } from "./modules/schools/schools.router";
+import { classesRouter } from "./modules/classes/classes.route";
 
 const app = express();
 
@@ -22,5 +23,6 @@ app.get('/', (req, res)=>{
 });
 
 app.use('/schools', schoolRouter);
+app.use('/classes', classesRouter);
 
 export default app;
