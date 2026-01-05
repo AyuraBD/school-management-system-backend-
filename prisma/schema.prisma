@@ -120,7 +120,7 @@ model Classes{
   updatedAt DateTime @updatedAt
 
   // Relations
-  schoolId String @unique
+  schoolId String 
   school Schools @relation(fields: [schoolId], references: [id])
   students Students[]
   subjects Subjects[]
