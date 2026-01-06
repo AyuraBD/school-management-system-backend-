@@ -4,7 +4,10 @@ import { schoolController } from './schools.controller';
 
 const router = express.Router();
 
-router.post('/create', authMiddleware(UserRole.USER), schoolController.createSchool);
+router.get('/', authMiddleware(UserRole.USER, UserRole.ADMIN), schoolController.getSchool);
 
+router.post('/create', authMiddleware(UserRole.USER, UserRole.ADMIN), schoolController.createSchool);
+
+router.patch('/update/:id', authMiddleware(UserRole.USER), schoolController.updateSchool);
 
 export const schoolRouter = router;

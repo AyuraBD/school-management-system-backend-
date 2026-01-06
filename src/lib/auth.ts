@@ -28,7 +28,7 @@ export const auth = betterAuth({
     emailAndPassword: {
       enabled: true,
       autoSignIn: false,
-      requireEmailVerification: true,
+      requireEmailVerification: true
     },
     user:{
       additionalFields:{
@@ -56,7 +56,6 @@ export const auth = betterAuth({
           subject: "Verify your email",
           html: "<b>Hello world?</b>", // HTML version of the message
         });
-        console.log("Info:",info, "User:",user, "url:", url, "token", token);
       },
       sendOnSignUp: true,
       autoSignInAfterVerification: true,

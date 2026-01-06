@@ -1,20 +1,46 @@
 import { Request, Response } from "express";
 import { schoolsService } from "./schools.service";
 
-const createSchool = async(req: Request, res: Response)=>{
+const getSchool = async(req: Request, res:Response)=>{
   try{
-    if(!req.user){
-      return res.status(400).json({
-        success: false,
-        message: "Unauthorized!"
-      })
-    }
-    const result = await schoolsService.createSchool(req.body, req.user.id);
+    const user = req.user;
+    const result = await schoolsService.getSchool(user?.id as string);
     res.status(200).json({
       success: true,
       data: result
     })
-    console.log("Controller:",result)
+  }catch(err:any){
+    res.status(400).json({
+      success: false,
+      message: err.message
+    })
+  }
+}
+
+const createSchool = async(req: Request, res: Response)=>{
+  try{
+    const result = await schoolsService.createSchool(req.body, req.user?.id as string);
+    res.status(200).json({
+      success: true,
+      data: result
+    })
+  }catch(err:any){
+    res.status(400).json({
+      success: false,
+      message: err.message
+    })
+  }
+}
+
+const updateSchool = async(req: Request, res: Response)=>{
+  try{
+    const user = req.user;
+    const {id} = req.params;
+    const result = await schoolsService.updateSchool(id as string, user?.id as string, req.body);
+    res.status(200).json({
+      success:true,
+      data: result
+    })
   }catch(err:any){
     res.status(400).json({
       success: false,
@@ -24,5 +50,7 @@ const createSchool = async(req: Request, res: Response)=>{
 }
 
 export const schoolController = {
-  createSchool
+  getSchool,
+  createSchool,
+  updateSchool
 }

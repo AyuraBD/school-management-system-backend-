@@ -6,6 +6,7 @@ import { schoolRouter } from "./modules/schools/schools.router";
 import { classesRouter } from "./modules/classes/classes.route";
 import { studentRouter } from "./modules/students/students.route";
 import { subjectRouter } from "./modules/subjects/subject.route";
+import { userRouter } from "./modules/users/users.route";
 
 const app = express();
 
@@ -24,6 +25,7 @@ app.get('/', (req, res)=>{
   res.send(`Server is running on: ${PORT}`);
 });
 
+app.use('/users', userRouter);
 app.use('/schools', schoolRouter);
 app.use('/classes', classesRouter);
 app.use('/students', studentRouter);
