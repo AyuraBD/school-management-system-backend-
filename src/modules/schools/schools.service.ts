@@ -1,5 +1,6 @@
 import { Schools } from "../../../generated/prisma/client";
 import { prisma } from "../../lib/prisma"
+import { UserRole } from "../../middleware/auth";
 
 const getSchool = async(user:string)=>{
   return await prisma.schools.findMany({
@@ -36,8 +37,29 @@ const updateSchool = async(id:string, userId: string, data:{name?:string, addres
   })
 }
 
+const deleteSchool = async(userId: string, userRole: string, id: string)=>{
+  const schoolData = await prisma.schools.findFirst({
+    where:{
+      id
+    },
+    select:{
+      id: true,
+      userId: true,
+    }
+  });
+  if(userRole !== UserRole.ADMIN && schoolData?.userId !== userId){
+    throw new Error("You are not allowed to delete this!");
+  }
+  return await prisma.schools.delete({
+    where:{
+      id
+    }
+  })
+}
+
 export const schoolsService = {
   getSchool,
   createSchool,
-  updateSchool
+  updateSchool,
+  deleteSchool
 }

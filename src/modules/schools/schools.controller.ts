@@ -49,8 +49,27 @@ const updateSchool = async(req: Request, res: Response)=>{
   }
 }
 
+const deleteSchool = async(req: Request, res: Response)=>{
+  try{
+    const user = req.user;
+    const userRole = req.user;
+    const {id} = req.params;
+    const result = await schoolsService.deleteSchool(user?.id as string, userRole?.role as string, id as string);
+    res.status(200).json({
+      success: true,
+      data: result
+    })
+  }catch(err:any){
+    res.status(400).json({
+      success: false,
+      message: err.message
+    })
+  }
+}
+
 export const schoolController = {
   getSchool,
   createSchool,
-  updateSchool
+  updateSchool,
+  deleteSchool
 }

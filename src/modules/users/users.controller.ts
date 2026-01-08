@@ -66,9 +66,27 @@ const changeRoleByAdmin = async(req: Request, res: Response)=>{
   }
 }
 
+const deleteUser = async(req: Request, res: Response)=>{
+  try{
+    const user = req.user;
+    const {id} = req.params;
+    const result = await userService.deleteUser(user?.id as string, user?.role as string, id as string);
+    res.status(200).json({
+      success: true,
+      data: result
+    })
+  }catch(err:any){
+    res.status(400).json({
+      success: false,
+      message: err.message
+    })
+  }
+}
+
 export const userController = {
   getAllUsers,
   getSingleUser,
   updateUser,
-  changeRoleByAdmin
+  changeRoleByAdmin,
+  deleteUser
 }

@@ -10,4 +10,6 @@ router.post('/create', authMiddleware(UserRole.USER, UserRole.ADMIN), schoolCont
 
 router.patch('/update/:id', authMiddleware(UserRole.USER), schoolController.updateSchool);
 
+router.delete('/:id', authMiddleware(UserRole.ADMIN, UserRole.USER), schoolController.deleteSchool);
+
 export const schoolRouter = router;

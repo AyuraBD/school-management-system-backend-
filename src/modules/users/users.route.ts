@@ -17,4 +17,5 @@ router.patch('/role/:id', authMiddleware(UserRole.ADMIN), userController.changeR
 
 router.patch('/:id', authMiddleware(UserRole.USER, UserRole.ADMIN), userController.updateUser);
 
+router.delete('/:id', authMiddleware(UserRole.ADMIN, UserRole.USER), userController.deleteUser);
 export const userRouter = router;

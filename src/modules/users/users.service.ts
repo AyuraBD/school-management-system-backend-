@@ -60,9 +60,36 @@ const changeRoleByAdmin = async(data:{role:UserRole}, userId: string, paramId: s
   })
 }
 
+const deleteUser = async(userId: string, userRole:string, id: string)=>{
+  const userData = await prisma.user.findUniqueOrThrow({
+    where:{
+      id
+    },
+    select:{
+      id: true,
+      role: true
+    }
+  });
+
+  if(userData?.role === UserRole.ADMIN){
+    throw new Error('The user you are trying to delete is an Admin.');
+  };
+  
+  if(userRole !== UserRole.ADMIN && userData.id !== userId){
+    throw new Error("You can't delete the user.");
+  }
+  
+  return await prisma.user.delete({
+    where:{
+      id: userId
+    }
+  })
+}
+
 export const userService = {
   getAllUsers,
   getSingleUser,
   changeRoleByAdmin,
-  updateUser
+  updateUser,
+  deleteUser
 }
