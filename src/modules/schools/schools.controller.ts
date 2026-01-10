@@ -1,7 +1,7 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { schoolsService } from "./schools.service";
 
-const getSchool = async(req: Request, res:Response)=>{
+const getSchool = async(req: Request, res:Response, next: NextFunction)=>{
   try{
     const user = req.user;
     const result = await schoolsService.getSchool(user?.id as string);
@@ -10,14 +10,11 @@ const getSchool = async(req: Request, res:Response)=>{
       data: result
     })
   }catch(err:any){
-    res.status(400).json({
-      success: false,
-      message: err.message
-    })
+    next(err);
   }
 }
 
-const createSchool = async(req: Request, res: Response)=>{
+const createSchool = async(req: Request, res: Response, next: NextFunction)=>{
   try{
     const result = await schoolsService.createSchool(req.body, req.user?.id as string);
     res.status(200).json({
@@ -25,14 +22,11 @@ const createSchool = async(req: Request, res: Response)=>{
       data: result
     })
   }catch(err:any){
-    res.status(400).json({
-      success: false,
-      message: err.message
-    })
+    next(err);
   }
 }
 
-const updateSchool = async(req: Request, res: Response)=>{
+const updateSchool = async(req: Request, res: Response, next: NextFunction)=>{
   try{
     const user = req.user;
     const {id} = req.params;
@@ -42,14 +36,11 @@ const updateSchool = async(req: Request, res: Response)=>{
       data: result
     })
   }catch(err:any){
-    res.status(400).json({
-      success: false,
-      message: err.message
-    })
+    next(err);
   }
 }
 
-const deleteSchool = async(req: Request, res: Response)=>{
+const deleteSchool = async(req: Request, res: Response, next: NextFunction)=>{
   try{
     const user = req.user;
     const userRole = req.user;
@@ -60,10 +51,7 @@ const deleteSchool = async(req: Request, res: Response)=>{
       data: result
     })
   }catch(err:any){
-    res.status(400).json({
-      success: false,
-      message: err.message
-    })
+    next(err);
   }
 }
 

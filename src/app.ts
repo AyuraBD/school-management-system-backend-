@@ -7,6 +7,7 @@ import { classesRouter } from "./modules/classes/classes.route";
 import { studentRouter } from "./modules/students/students.route";
 import { subjectRouter } from "./modules/subjects/subject.route";
 import { userRouter } from "./modules/users/users.route";
+import errorHandler from "./middleware/errorHandler";
 
 const app = express();
 
@@ -30,5 +31,8 @@ app.use('/schools', schoolRouter);
 app.use('/classes', classesRouter);
 app.use('/students', studentRouter);
 app.use('/subjects', subjectRouter);
+
+// Error handler
+app.use(errorHandler);
 
 export default app;

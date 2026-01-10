@@ -1,7 +1,7 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { userService } from "./users.service";
 
-const getAllUsers = async(req: Request, res: Response)=>{
+const getAllUsers = async(req: Request, res: Response, next: NextFunction)=>{
   try{
     const result = await userService.getAllUsers();
     res.status(200).json({
@@ -9,14 +9,11 @@ const getAllUsers = async(req: Request, res: Response)=>{
       data: result
     })
   }catch(err:any){
-    res.status(400).json({
-      success: false,
-      message: err.message
-    })
+    next(err);
   }
 }
 
-const getSingleUser = async(req: Request, res: Response)=>{
+const getSingleUser = async(req: Request, res: Response, next: NextFunction)=>{
   try{
     const result = await userService.getSingleUser();
     res.status(200).json({
@@ -24,14 +21,11 @@ const getSingleUser = async(req: Request, res: Response)=>{
       data: result
     })
   }catch(err:any){
-    res.status(400).json({
-      success: false,
-      message: err.message
-    })
+    next(err)
   }
 }
 
-const updateUser = async(req: Request, res: Response)=>{
+const updateUser = async(req: Request, res: Response, next: NextFunction)=>{
   try{
     const {id} = req.params;
     const user = req.user;
@@ -41,14 +35,11 @@ const updateUser = async(req: Request, res: Response)=>{
       data: result
     })
   }catch(err:any){
-    res.status(400).json({
-      success:false,
-      message: err.message
-    })
+    next(err);
   }
 }
 
-const changeRoleByAdmin = async(req: Request, res: Response)=>{
+const changeRoleByAdmin = async(req: Request, res: Response, next: NextFunction)=>{
   try{
     const user = req.user;
     const {id} = req.params;
@@ -59,14 +50,11 @@ const changeRoleByAdmin = async(req: Request, res: Response)=>{
       data: result
     })
   }catch(err:any){
-    res.status(400).json({
-      success: false,
-      message: err.message
-    })
+    next(err);
   }
 }
 
-const deleteUser = async(req: Request, res: Response)=>{
+const deleteUser = async(req: Request, res: Response, next: NextFunction)=>{
   try{
     const user = req.user;
     const {id} = req.params;
@@ -76,10 +64,7 @@ const deleteUser = async(req: Request, res: Response)=>{
       data: result
     })
   }catch(err:any){
-    res.status(400).json({
-      success: false,
-      message: err.message
-    })
+    next(err);
   }
 }
 
